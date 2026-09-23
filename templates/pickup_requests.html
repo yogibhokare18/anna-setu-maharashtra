@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block title %}Pickup Requests - अन्नसेतू महाराष्ट्र{% endblock %}
+
+{% block content %}
+
+<div style="
+    max-width: 1150px;
+    margin: 0 auto;
+    padding: 45px 20px 70px;
+">
+
+    <h1>🚚 Pickup Requests</h1>
+
+    <p style="color: #666; margin-bottom: 30px;">
+        Available food donations that require pickup.
+    </p>
+
+    {% if donations %}
+
+        <div style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        ">
+
+            {% for donation in donations %}
+
+                <div style="
+                    background: white;
+                    border: 1px solid #e5e7eb;
+                    border-radius: 14px;
+                    padding: 22px;
+                    box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+                ">
+
+                    <h2 style="margin-top: 0;">
+                        🍱 {{ donation.food_name }}
+                    </h2>
+
+                    <p>
+                        <strong>Food Type:</strong>
+                        {{ donation.food_type|title }}
+                    </p>
+
+                    <p>
+                        <strong>Quantity:</strong>
+                        {{ donation.quantity }}
+                    </p>
+
+                    <p>
+                        <strong>Serves:</strong>
+                        {{ donation.serves_people }} people
+                    </p>
+
+                    <p>
+                        <strong>Pickup Address:</strong><br>
+                        {{ donation.address }}
+                    </p>
+
+                    <p>
+                        <strong>Safe Until:</strong><br>
+                        {{ donation.safe_until.strftime("%d %b %Y, %I:%M %p") }}
+                    </p>
+
+                    <div style="
+                        margin-top: 15px;
+                        padding: 8px 12px;
+                        background: #e8f5e9;
+                        color: #2e7d32;
+                        border-radius: 8px;
+                        display: inline-block;
+                    ">
+                        🟢 Available
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div style="
+            background: white;
+            padding: 35px;
+            border-radius: 14px;
+            text-align: center;
+            border: 1px solid #e5e7eb;
+        ">
+
+            <h2>📭 No Pickup Requests</h2>
+
+            <p style="color: #666;">
+                There are currently no available food donations
+                requiring pickup.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

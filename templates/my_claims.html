@@ -1,0 +1,325 @@
+{% extends "base.html" %}
+
+{% block title %}My Claims - अन्नसेतू महाराष्ट्र{% endblock %}
+
+{% block extra_css %}
+<style>
+    .claims-page {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 45px 20px 70px;
+    }
+
+    .claims-header {
+        margin-bottom: 30px;
+    }
+
+    .claims-header h1 {
+        margin: 0 0 10px;
+        font-size: clamp(28px, 4vw, 42px);
+    }
+
+    .claims-header p {
+        margin: 0;
+        color: #65756c;
+    }
+
+    .claims-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+    }
+
+    .claim-card {
+        padding: 24px;
+        background: white;
+        border: 1px solid #e2ebe4;
+        border-radius: 18px;
+        box-shadow: 0 8px 25px rgba(24, 49, 42, 0.08);
+    }
+
+    .claim-card-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+        padding-bottom: 18px;
+        border-bottom: 1px solid #edf1ed;
+    }
+
+    .claim-card h2 {
+        margin: 0;
+        font-size: 22px;
+        overflow-wrap: anywhere;
+    }
+
+    .claim-status {
+        flex-shrink: 0;
+        padding: 7px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: bold;
+        text-transform: capitalize;
+    }
+
+    .status-available {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .status-claimed {
+        background: #dbeafe;
+        color: #1e40af;
+    }
+
+    .status-picked-up {
+        background: #ffedd5;
+        color: #9a3412;
+    }
+
+    .status-delivered {
+        background: #f3e8ff;
+        color: #7e22ce;
+    }
+
+    .claim-details {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+        margin-top: 22px;
+    }
+
+    .claim-detail.wide {
+        grid-column: 1 / -1;
+    }
+
+    .claim-label {
+        display: block;
+        margin-bottom: 6px;
+        color: #718178;
+        font-size: 14px;
+    }
+
+    .claim-value {
+        display: block;
+        font-size: 16px;
+        font-weight: 600;
+        overflow-wrap: anywhere;
+    }
+
+    .claims-empty {
+        padding: 65px 20px;
+        background: white;
+        border: 1px dashed #bed7c5;
+        border-radius: 18px;
+        text-align: center;
+    }
+
+    .claims-empty a {
+        display: inline-block;
+        margin-top: 16px;
+        padding: 12px 18px;
+        border-radius: 10px;
+        background: #178655;
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+        .claim-actions {
+        margin-top: 24px;
+        padding-top: 20px;
+        border-top: 1px solid #edf1ed;
+    }
+
+    .claim-actions form {
+        margin: 0;
+    }
+
+    .action-btn {
+        width: 100%;
+        border: none;
+        padding: 13px 18px;
+        border-radius: 10px;
+        color: white;
+        font-size: 15px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.2s ease;
+    }
+
+    .pickup-btn {
+        background: #ea580c;
+    }
+
+    .pickup-btn:hover {
+        background: #c2410c;
+    }
+
+    .delivered-btn {
+        background: #16a34a;
+    }
+
+    .delivered-btn:hover {
+        background: #15803d;
+    }
+
+    .completed-message {
+        margin-top: 24px;
+        padding: 14px;
+        border-radius: 10px;
+        background: #f3e8ff;
+        color: #7e22ce;
+        text-align: center;
+        font-weight: bold;
+    }
+
+
+    @media (max-width: 600px) {
+        .claims-page {
+            padding: 28px 15px 50px;
+        }
+
+        .claim-card {
+            padding: 20px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="claims-page">
+    <header class="claims-header">
+        <h1>🤝 My Claimed Donations</h1>
+        <p>Track all the food donations you have claimed.</p>
+    </header>
+
+    {% if claims %}
+        <div class="claims-grid">
+            {% for donation in claims %}
+                <article class="claim-card">
+                    <div class="claim-card-top">
+                        <h2>🍱 {{ donation.food_name }}</h2>
+                            <span class="claim-status
+                                {% if donation.status == 'available' %}
+                                    status-available
+
+                                {% elif donation.status == 'claimed' %}
+                                    status-claimed
+
+                                {% elif donation.status == 'picked_up' %}
+                                    status-picked-up
+
+                                {% elif donation.status == 'delivered' %}
+                                    status-delivered
+
+                                {% endif %}
+                            ">
+
+                                {% if donation.status == "available" %}
+                                    🟢 Available
+
+                                {% elif donation.status == "claimed" %}
+                                    🔵 Claimed
+
+                                {% elif donation.status == "picked_up" %}
+                                    🟠 Picked Up
+
+                                {% elif donation.status == "delivered" %}
+                                    🟣 Delivered
+
+                                {% else %}
+                                    ⚪ {{ donation.status }}
+
+                                {% endif %}
+
+                            </span>
+                    </div>
+
+                    <div class="claim-details">
+                        <div class="claim-detail">
+                            <span class="claim-label">📦 Quantity</span>
+                            <span class="claim-value">{{ donation.quantity }}</span>
+                        </div>
+
+                        <div class="claim-detail">
+                            <span class="claim-label">👥 Serves</span>
+                            <span class="claim-value">
+                                {{ donation.serves_people }} people
+                            </span>
+                        </div>
+
+                        <div class="claim-detail wide">
+                            <span class="claim-label">📍 Address</span>
+                            <span class="claim-value">{{ donation.address }}</span>
+                        </div>
+
+                        <div class="claim-detail wide">
+                            <span class="claim-label">📅 Claimed At</span>
+                            <span class="claim-value">{{ donation.claimed_at }}</span>
+                        </div>
+                        {% if donation.status == "claimed" %}
+
+    <div class="claim-actions">
+
+        <form
+            method="POST"
+            action="{{ url_for(
+                'update_donation_status',
+                donation_id=donation.id,
+                new_status='picked_up'
+            ) }}"
+        >
+
+            <button type="submit" class="action-btn pickup-btn">
+                🚚 Mark as Picked Up
+            </button>
+
+        </form>
+
+    </div>
+
+{% elif donation.status == "picked_up" %}
+
+    <div class="claim-actions">
+
+        <form
+            method="POST"
+            action="{{ url_for(
+                'update_donation_status',
+                donation_id=donation.id,
+                new_status='delivered'
+            ) }}"
+        >
+
+            <button type="submit" class="action-btn delivered-btn">
+                ✅ Mark as Delivered
+            </button>
+
+        </form>
+
+    </div>
+
+{% elif donation.status == "delivered" %}
+
+    <div class="completed-message">
+        🎉 Donation successfully delivered!
+    </div>
+
+{% endif %}
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="claims-empty">
+            <h2>🍽️ No donations claimed yet</h2>
+            <p>Claimed donations will appear here.</p>
+
+            <a href="{{ url_for('available_food') }}">
+                🔎 Find Available Food
+            </a>
+        </div>
+    {% endif %}
+</main>
+{% endblock %}

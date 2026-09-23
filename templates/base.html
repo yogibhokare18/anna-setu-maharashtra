@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        {% block title %}
+        अन्नसेतू महाराष्ट्र
+        {% endblock %}
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f8f4;
+            color: #18312a;
+        }
+
+        /* =========================
+   NAVBAR
+========================= */
+
+.site-navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+
+    background: linear-gradient(
+        135deg,
+        #178655,
+        #0f6b43
+    );
+
+    padding: 12px 24px;
+
+    box-shadow:
+        0 5px 18px rgba(24, 49, 42, 0.14);
+}
+
+.navbar-inner {
+    max-width: 1200px;
+    min-height: 52px;
+
+    margin: 0 auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 25px;
+}
+
+/* =========================
+   LOGO
+========================= */
+
+.site-logo {
+    display: inline-flex;
+    align-items: center;
+
+    color: white;
+    text-decoration: none;
+
+    font-size: 24px;
+    font-weight: 800;
+
+    white-space: nowrap;
+
+    transition: 0.2s ease;
+}
+
+.site-logo:hover {
+    color: white;
+    transform: translateY(-1px);
+}
+
+/* =========================
+   NAVIGATION
+========================= */
+
+.navbar-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.nav-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 40px;
+
+    padding: 9px 14px;
+
+    border-radius: 10px;
+
+    text-decoration: none;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.nav-btn:hover {
+    transform: translateY(-1px);
+}
+
+/* =========================
+   DASHBOARD
+========================= */
+
+.dashboard-btn {
+    color: white;
+
+    background: rgba(255, 255, 255, 0.10);
+
+    border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.dashboard-btn:hover {
+    color: #0f6b43;
+
+    background: white;
+
+    border-color: white;
+}
+
+/* =========================
+   SECONDARY NAVIGATION
+========================= */
+
+.nav-secondary {
+    color: white;
+
+    background: rgba(255, 255, 255, 0.08);
+
+    border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.nav-secondary:hover {
+    color: white;
+
+    background: rgba(255, 255, 255, 0.18);
+
+    border-color: rgba(255, 255, 255, 0.45);
+}
+
+/* =========================
+   NOTIFICATIONS
+========================= */
+
+.notification-btn {
+    color: white;
+
+    background: rgba(255, 255, 255, 0.08);
+
+    border: 1px solid rgba(255, 255, 255, 0.25);
+
+    min-width: 42px;
+}
+
+.notification-btn:hover {
+    color: #0f6b43;
+
+    background: white;
+
+    border-color: white;
+}
+
+/* =========================
+   LOGOUT
+========================= */
+
+.logout-btn {
+    color: white;
+
+    background: #dc2626;
+
+    border: 1px solid #dc2626;
+}
+
+.logout-btn:hover {
+    color: white;
+
+    background: #b91c1c;
+
+    border-color: #b91c1c;
+}
+
+.logout-btn {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    color: white !important;
+    background: #dc2626 !important;
+    border: 1px solid #dc2626 !important;
+    flex-shrink: 0;
+}
+
+.logout-btn:hover {
+    color: white !important;
+    background: #b91c1c !important;
+}
+
+
+/* =========================
+   MOBILE NAVBAR
+========================= */
+
+@media (max-width: 850px) {
+
+    .navbar-inner {
+        align-items: flex-start;
+        flex-direction: column;
+
+        gap: 12px;
+    }
+
+    .navbar-actions {
+        width: 100%;
+
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .site-navbar {
+        padding: 10px 15px;
+    }
+
+    .site-logo {
+        font-size: 21px;
+    }
+
+    .navbar-actions {
+        gap: 7px;
+    }
+
+    .nav-btn {
+        min-height: 38px;
+
+        padding: 8px 10px;
+
+        font-size: 13px;
+    }
+
+    .notification-btn {
+        min-width: 40px;
+    }
+}
+
+/* =========================
+   FLASH MESSAGES
+========================= */
+
+.flash-container {
+    position: fixed;
+    top: 82px;
+    right: 24px;
+    z-index: 2000;
+
+    width: min(420px, calc(100% - 30px));
+
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.flash-message {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+
+    padding: 14px 16px;
+
+    border-radius: 12px;
+
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.4;
+
+    background: white;
+
+    box-shadow:
+        0 8px 24px rgba(24, 49, 42, 0.15);
+
+    border-left: 5px solid;
+
+    animation: flashSlideIn 0.3s ease;
+}
+
+.flash-success {
+    color: #166534;
+    border-left-color: #16a34a;
+    background: #f0fdf4;
+}
+
+.flash-error {
+    color: #991b1b;
+    border-left-color: #dc2626;
+    background: #fef2f2;
+}
+
+.flash-warning {
+    color: #92400e;
+    border-left-color: #f59e0b;
+    background: #fffbeb;
+}
+
+.flash-info {
+    color: #1e40af;
+    border-left-color: #2563eb;
+    background: #eff6ff;
+}
+
+.flash-close {
+    flex-shrink: 0;
+
+    width: 28px;
+    height: 28px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: transparent;
+
+    color: inherit;
+
+    font-size: 22px;
+    font-weight: 700;
+
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.flash-close:hover {
+    background: rgba(0, 0, 0, 0.08);
+    transform: scale(1.05);
+}
+
+@keyframes flashSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@media (max-width: 600px) {
+
+    .flash-container {
+        top: 72px;
+        right: 15px;
+        width: calc(100% - 30px);
+    }
+
+    .flash-message {
+        padding: 13px 14px;
+        font-size: 13px;
+    }
+}
+
+
+/* =========================
+   EMPTY STATES
+========================= */
+
+.empty-state {
+    text-align: center;
+    padding: 45px 25px;
+    margin: 20px 0;
+
+    background: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    border-radius: 16px;
+}
+
+.empty-state-icon {
+    font-size: 46px;
+    margin-bottom: 12px;
+}
+
+.empty-state h3 {
+    margin: 0 0 8px;
+
+    color: #18312a;
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.empty-state p {
+    max-width: 500px;
+    margin: 0 auto;
+
+    color: #64748b;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.empty-state-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-top: 18px;
+    padding: 11px 18px;
+
+    border-radius: 10px;
+
+    background: #178655;
+    color: white;
+
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 700;
+
+    transition: 0.2s ease;
+}
+
+.empty-state-btn:hover {
+    background: #0f6b43;
+    color: white;
+    transform: translateY(-1px);
+}
+
+/* =========================
+   LOADING STATE
+========================= */
+
+.loading-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    padding: 30px;
+
+    color: #64748b;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.loading-spinner {
+    width: 22px;
+    height: 22px;
+
+    border: 3px solid #d1fae5;
+    border-top-color: #178655;
+
+    border-radius: 50%;
+
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+    </style>
+
+    {% block extra_css %}{% endblock %}
+
+</head>
+
+
+<body>
+
+
+<!-- =========================
+     FLASH MESSAGES
+========================= -->
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+
+    {% if messages %}
+
+        <div class="flash-container">
+
+            {% for category, message in messages %}
+
+                <div class="flash-message flash-{{ category }}">
+
+                    {{ message }}
+
+                    <button
+                        type="button"
+                        class="flash-close"
+                        onclick="this.parentElement.remove()"
+                    >
+                        ×
+                    </button>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% endif %}
+
+{% endwith %}
+
+<!-- =========================
+     NAVBAR
+========================= -->
+
+<nav class="site-navbar">
+
+    <div class="navbar-inner">
+
+        <!-- LOGO -->
+
+        <a
+            class="site-logo"
+            href="{{ url_for('dashboard') }}"
+        >
+            🍱 अन्नसेतू महाराष्ट्र
+        </a>
+
+
+        <!-- NAVIGATION -->
+
+        <div class="navbar-actions">
+
+
+            <!-- DASHBOARD -->
+
+            {% if current_user.is_authenticated %}
+
+                <a
+                    class="nav-btn dashboard-btn"
+                    href="{{ url_for('dashboard') }}"
+                >
+                    🏠 Dashboard
+                </a>
+
+            {% endif %}
+
+
+            <!-- DONOR LINKS -->
+
+            {% if current_user.is_authenticated
+                  and current_user.role == "donor" %}
+
+                <a
+                    class="nav-btn nav-secondary"
+                    href="{{ url_for('add_food') }}"
+                >
+                    ➕ Add Food
+                </a>
+
+                <a
+                    class="nav-btn nav-secondary"
+                    href="{{ url_for('my_donations') }}"
+                >
+                    📦 My Donations
+                </a>
+
+            {% endif %}
+
+
+            <!-- NGO LINKS -->
+
+            {% if current_user.is_authenticated
+                  and current_user.role == "ngo" %}
+
+                <a
+                    class="nav-btn nav-secondary"
+                    href="{{ url_for('available_food') }}"
+                >
+                    🎯 Smart Match
+                </a>
+
+                <a
+                    class="nav-btn nav-secondary"
+                    href="{{ url_for('my_claims') }}"
+                >
+                    🤝 My Claims
+                </a>
+
+            {% endif %}
+
+<!-- VOLUNTEER LINKS -->
+{% if current_user.is_authenticated
+      and current_user.role == "volunteer" %}
+
+    <a
+        class="nav-btn nav-secondary"
+        href="{{ url_for('pickup_requests') }}"
+    >
+        🚚 Pickup Requests
+    </a>
+
+{% endif %}
+
+
+            <!-- NOTIFICATIONS -->
+
+            {% if current_user.is_authenticated %}
+
+                <a
+                    class="nav-btn notification-btn"
+                    href="{{ url_for('notifications') }}"
+                >
+                    🔔 Notifications
+                </a>
+
+            {% endif %}
+
+
+            <!-- LOGOUT -->
+
+{% if current_user.is_authenticated %}
+    <a
+        class="nav-btn logout-btn"
+        href="{{ url_for('logout') }}"
+    >
+        🚪 Logout
+    </a>
+{% endif %}
+
+
+        </div>
+
+    </div>
+
+</nav>
+
+
+<!-- =========================
+     PAGE CONTENT
+========================= -->
+
+{% block content %}
+
+{% endblock %}
+
+
+</body>
+
+</html>

@@ -1,0 +1,1590 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Dashboard - अन्नसेतू महाराष्ट्र</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+    <style>
+        /* =========================
+           GLOBAL
+        ========================= */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #f5f8f4;
+            color: #18312a;
+            font-family: Arial, sans-serif;
+        }
+
+
+        /* =========================
+           DASHBOARD
+        ========================= */
+
+        .dashboard-page {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px 70px;
+        }
+
+
+        /* =========================
+           WELCOME
+        ========================= */
+
+        .welcome-card {
+            position: relative;
+            padding: 34px;
+            margin-bottom: 22px;
+
+            background: linear-gradient(
+                135deg,
+                #178655,
+                #0f6b43
+            );
+
+            color: white;
+            border-radius: 22px;
+
+            box-shadow:
+                0 12px 30px rgba(24, 49, 42, 0.15);
+
+            overflow: hidden;
+        }
+
+        .welcome-card::after {
+            content: "🍱";
+
+            position: absolute;
+            right: 35px;
+            bottom: 15px;
+
+            font-size: 85px;
+            opacity: 0.12;
+        }
+
+        .welcome-card h1 {
+            margin: 0 0 10px;
+
+            font-size: clamp(28px, 4vw, 42px);
+            line-height: 1.15;
+        }
+
+        .welcome-card p {
+            margin: 0;
+            max-width: 650px;
+
+            color: #e5f6eb;
+            line-height: 1.6;
+        }
+
+        .role-badge {
+            display: inline-block;
+
+            margin-top: 18px;
+            padding: 7px 14px;
+
+            border-radius: 20px;
+
+            background: rgba(255, 255, 255, 0.16);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+
+            color: white;
+
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+
+        /* =========================
+           INTRO
+        ========================= */
+
+        .intro-card {
+            padding: 24px 28px;
+            margin-bottom: 20px;
+
+            background: white;
+            border: 1px solid #e2ebe4;
+            border-radius: 18px;
+
+            box-shadow:
+                0 8px 25px rgba(24, 49, 42, 0.07);
+        }
+
+        .intro-card h2 {
+            margin: 0 0 7px;
+            font-size: 23px;
+        }
+
+        .intro-card p {
+            margin: 0;
+
+            color: #65756c;
+            line-height: 1.5;
+        }
+
+
+        /* =========================
+           STATS
+        ========================= */
+
+        .stats-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, minmax(0, 1fr));
+
+            gap: 18px;
+
+            margin-bottom: 22px;
+        }
+
+        .stat-card {
+            padding: 23px;
+
+            text-align: center;
+
+            background: white;
+            border: 1px solid #e2ebe4;
+            border-radius: 18px;
+
+            box-shadow:
+                0 8px 25px rgba(24, 49, 42, 0.07);
+
+            transition: 0.25s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+
+            box-shadow:
+                0 12px 30px rgba(24, 49, 42, 0.11);
+        }
+
+        .stat-icon {
+            font-size: 30px;
+        }
+
+        .stat-title {
+            margin-top: 8px;
+
+            color: #65756c;
+
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .stat-number {
+            margin: 5px 0;
+
+            color: #178655;
+
+            font-size: 34px;
+            font-weight: 800;
+        }
+
+        .stat-subtitle {
+            color: #718178;
+            font-size: 12px;
+        }
+
+
+        /* =========================
+           ACTION CARDS
+        ========================= */
+
+        .dashboard-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+
+            gap: 20px;
+
+            margin-bottom: 22px;
+        }
+
+        .dashboard-card {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+
+            padding: 27px;
+
+            background: white;
+            border: 1px solid #e2ebe4;
+            border-radius: 18px;
+
+            box-shadow:
+                0 8px 25px rgba(24, 49, 42, 0.07);
+
+            transition: 0.25s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-4px);
+
+            box-shadow:
+                0 13px 32px rgba(24, 49, 42, 0.11);
+        }
+
+        .dashboard-icon {
+            display: grid;
+            place-items: center;
+
+            width: 54px;
+            height: 54px;
+
+            margin-bottom: 17px;
+
+            border-radius: 15px;
+
+            background: #e9f6ed;
+
+            font-size: 26px;
+        }
+
+        .dashboard-card h3 {
+            margin: 0 0 8px;
+            font-size: 21px;
+        }
+
+        .dashboard-card p {
+            margin: 0 0 22px;
+
+            color: #65756c;
+            line-height: 1.55;
+        }
+
+        .dashboard-link {
+            display: inline-block;
+
+            margin-top: auto;
+            padding: 11px 17px;
+
+            border-radius: 10px;
+
+            background: #178655;
+            color: white;
+
+            text-decoration: none;
+
+            font-weight: 700;
+
+            transition: 0.2s ease;
+        }
+
+        .dashboard-link:hover {
+            background: #126b44;
+            color: white;
+
+            transform: translateY(-1px);
+        }
+
+        .dashboard-link.outline {
+            background: white;
+
+            border: 1px solid #178655;
+
+            color: #167347;
+        }
+
+        .dashboard-link.outline:hover {
+            background: #e9f6ed;
+        }
+
+
+        /* =========================
+           RECENT ACTIVITY
+        ========================= */
+
+        .recent-card {
+            margin-top: 22px;
+
+            padding: 26px;
+
+            background: white;
+            border: 1px solid #e2ebe4;
+            border-radius: 18px;
+
+            box-shadow:
+                0 8px 25px rgba(24, 49, 42, 0.07);
+        }
+
+        .recent-header {
+            display: flex;
+
+            justify-content: space-between;
+            align-items: center;
+
+            gap: 15px;
+
+            margin-bottom: 18px;
+        }
+
+        .recent-header h3 {
+            margin: 0;
+            font-size: 21px;
+        }
+
+        .recent-header a {
+            color: #167347;
+
+            text-decoration: none;
+
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .recent-header a:hover {
+            text-decoration: underline;
+        }
+
+        .recent-table-wrapper {
+            overflow-x: auto;
+        }
+
+        .recent-table {
+            width: 100%;
+
+            border-collapse: collapse;
+
+            min-width: 600px;
+        }
+
+        .recent-table th {
+            padding: 12px;
+
+            background: #f5f8f4;
+            color: #52645b;
+
+            font-size: 13px;
+            text-align: left;
+        }
+
+        .recent-table td {
+            padding: 14px 12px;
+
+            border-bottom: 1px solid #edf1ee;
+
+            font-size: 14px;
+        }
+
+        .recent-table tbody tr:hover {
+            background: #fafcfb;
+        }
+
+
+        /* =========================
+           STATUS BADGES
+        ========================= */
+
+        .status-badge {
+            display: inline-flex;
+
+            align-items: center;
+            justify-content: center;
+
+            padding: 6px 10px;
+
+            border-radius: 999px;
+
+            font-size: 12px;
+            font-weight: 700;
+
+            text-transform: capitalize;
+            white-space: nowrap;
+        }
+
+        .status-available {
+            color: #166534;
+            background: #dcfce7;
+        }
+
+        .status-claimed {
+            color: #1e40af;
+            background: #dbeafe;
+        }
+
+        .status-picked {
+            color: #a15c00;
+            background: #fff4df;
+        }
+
+        .status-delivered {
+            color: #7040a5;
+            background: #f0e7ff;
+        }
+
+
+        /* =========================
+           EMPTY STATE
+        ========================= */
+
+        .empty-state {
+            text-align: center;
+
+            padding: 35px 20px;
+
+            border: 1px dashed #cbd5e1;
+            border-radius: 14px;
+
+            background: #f8fafc;
+        }
+
+        .empty-state-icon {
+            font-size: 38px;
+            margin-bottom: 10px;
+        }
+
+        .empty-state h3 {
+            margin: 0 0 8px;
+
+            font-size: 18px;
+            color: #18312a;
+        }
+
+        .empty-state p {
+            margin: 0;
+
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .empty-state a {
+            display: inline-flex;
+
+            margin-top: 16px;
+            padding: 10px 16px;
+
+            border-radius: 10px;
+
+            background: #178655;
+            color: white;
+
+            text-decoration: none;
+
+            font-size: 14px;
+            font-weight: 700;
+
+            transition: 0.2s ease;
+        }
+
+        .empty-state a:hover {
+            background: #0f6b43;
+            transform: translateY(-1px);
+        }
+
+
+        /* =========================
+           LOCATION
+        ========================= */
+
+        .location-card {
+            display: flex;
+
+            justify-content: space-between;
+            align-items: center;
+
+            gap: 20px;
+
+            margin-top: 30px;
+            padding: 26px;
+
+            background: white;
+
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+
+            box-shadow:
+                0 6px 20px rgba(24, 49, 42, 0.08);
+        }
+
+        .location-card h3 {
+            margin: 0 0 8px;
+
+            color: #18312a;
+
+            font-size: 21px;
+            font-weight: 800;
+        }
+
+        .location-card p {
+            margin: 0 0 18px;
+
+            color: #64748b;
+
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .location-form {
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            flex-wrap: wrap;
+
+            flex-shrink: 0;
+        }
+
+        .location-form input {
+            flex: 1;
+
+            min-width: 220px;
+
+            padding: 12px 14px;
+
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+
+            font-size: 14px;
+
+            color: #18312a;
+
+            outline: none;
+        }
+
+        .location-form input:focus {
+            border-color: #178655;
+
+            box-shadow:
+                0 0 0 3px rgba(23, 134, 85, 0.12);
+        }
+
+        .location-btn {
+            padding: 12px 18px;
+
+            border: none;
+            border-radius: 10px;
+
+            background: #178655;
+            color: white;
+
+            font-size: 14px;
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition: 0.2s ease;
+        }
+
+        .location-btn:hover {
+            background: #0f6b43;
+
+            transform: translateY(-1px);
+        }
+
+        .location-btn:disabled {
+            opacity: 0.65;
+            cursor: wait;
+        }
+
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 950px) {
+
+            .stats-grid {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+            .dashboard-grid {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+        }
+
+
+        @media (max-width: 700px) {
+
+            .dashboard-page {
+                padding: 28px 15px 50px;
+            }
+
+            .welcome-card,
+            .intro-card,
+            .stat-card,
+            .dashboard-card,
+            .recent-card,
+            .location-card {
+                padding: 21px;
+            }
+
+            .welcome-card::after {
+                right: 15px;
+                font-size: 65px;
+            }
+
+            .dashboard-grid,
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .location-card {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .location-form {
+                width: 100%;
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .location-form input {
+                min-width: 100%;
+                width: 100%;
+            }
+
+            .location-btn {
+                width: 100%;
+            }
+
+            .recent-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .recent-item {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+
+
+        @media (max-width: 600px) {
+
+            .welcome-card h1 {
+                font-size: 28px;
+            }
+
+            .recent-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+
+<body>
+
+<main class="dashboard-page">
+
+
+    <!-- =========================
+         WELCOME
+    ========================== -->
+
+    <section class="welcome-card">
+
+        <h1>
+            Welcome, {{ current_user.name }}! 👋
+        </h1>
+
+        <p>
+            Let's make sure good food reaches the people who need it.
+        </p>
+
+        <span class="role-badge">
+
+            Your role:
+            {{ current_user.role.upper() }}
+
+        </span>
+
+    </section>
+
+
+    <!-- =====================================================
+         DONOR DASHBOARD
+    ====================================================== -->
+
+    {% if current_user.role == "donor" %}
+
+        <section class="intro-card">
+
+            <h2>
+                🍱 Food Donor Dashboard
+            </h2>
+
+            <p>
+                You can add surplus food and help people in need.
+            </p>
+
+        </section>
+
+
+        <!-- DONOR STATS -->
+
+        <section
+            class="stats-grid"
+            aria-label="Donation statistics"
+        >
+
+            <article class="stat-card">
+
+                <div class="stat-icon">
+                    📦
+                </div>
+
+                <div class="stat-title">
+                    Total Donations
+                </div>
+
+                <div class="stat-number">
+                    {{ total_donations }}
+                </div>
+
+                <div class="stat-subtitle">
+                    All food donations
+                </div>
+
+            </article>
+
+
+            <article class="stat-card">
+
+                <div class="stat-icon">
+                    🟢
+                </div>
+
+                <div class="stat-title">
+                    Available
+                </div>
+
+                <div class="stat-number">
+                    {{ available_donations }}
+                </div>
+
+                <div class="stat-subtitle">
+                    Waiting for NGO
+                </div>
+
+            </article>
+
+
+            <article class="stat-card">
+
+                <div class="stat-icon">
+                    🤝
+                </div>
+
+                <div class="stat-title">
+                    Claimed
+                </div>
+
+                <div class="stat-number">
+                    {{ claimed_donations }}
+                </div>
+
+                <div class="stat-subtitle">
+                    Successfully claimed
+                </div>
+
+            </article>
+
+
+            <article class="stat-card">
+
+                <div class="stat-icon">
+                    🔔
+                </div>
+
+                <div class="stat-title">
+                    Notifications
+                </div>
+
+                <div class="stat-number">
+                    {{ unread_notifications }}
+                </div>
+
+                <div class="stat-subtitle">
+                    Unread notifications
+                </div>
+
+            </article>
+
+        </section>
+
+
+        <!-- DONOR ACTIONS -->
+
+        <section
+            class="dashboard-grid"
+            aria-label="Donor actions"
+        >
+
+            <article class="dashboard-card">
+
+                <span
+                    class="dashboard-icon"
+                    aria-hidden="true"
+                >
+                    ➕
+                </span>
+
+                <h3>
+                    Add Food Donation
+                </h3>
+
+                <p>
+                    Share safe surplus food with people in need.
+                </p>
+
+                <a
+                    href="{{ url_for('add_food') }}"
+                    class="dashboard-link"
+                >
+                    Add Food →
+                </a>
+
+            </article>
+
+
+            <article class="dashboard-card">
+
+                <span
+                    class="dashboard-icon"
+                    aria-hidden="true"
+                >
+                    📋
+                </span>
+
+                <h3>
+                    My Donations
+                </h3>
+
+                <p>
+                    View and track all food donations you have shared.
+                </p>
+
+                <a
+                    href="{{ url_for('my_donations') }}"
+                    class="dashboard-link outline"
+                >
+                    View Donations →
+                </a>
+
+            </article>
+
+
+            <article class="dashboard-card">
+
+                <span
+                    class="dashboard-icon"
+                    aria-hidden="true"
+                >
+                    🔔
+                </span>
+
+                <h3>
+                    Notifications
+                </h3>
+
+                <p>
+                    See updates when NGOs claim, pickup or receive your food.
+                </p>
+
+                <a
+                    href="{{ url_for('notifications') }}"
+                    class="dashboard-link outline"
+                >
+                    View Notifications →
+                </a>
+
+            </article>
+
+        </section>
+
+
+        <!-- RECENT DONATIONS -->
+
+        <section class="recent-card">
+
+            <div class="recent-header">
+
+                <h3>
+                    📋 Recent Donations
+                </h3>
+
+                <a href="{{ url_for('my_donations') }}">
+                    View All →
+                </a>
+
+            </div>
+
+
+            {% if recent_donations %}
+
+                <div class="recent-table-wrapper">
+
+                    <table class="recent-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Food
+                                </th>
+
+                                <th>
+                                    Quantity
+                                </th>
+
+                                <th>
+                                    Serves
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            {% for donation in recent_donations %}
+
+                                <tr>
+
+                                    <td>
+                                        🍱 {{ donation.food_name }}
+                                    </td>
+
+                                    <td>
+                                        {{ donation.quantity }}
+                                    </td>
+
+                                    <td>
+                                        {{ donation.serves_people }}
+                                        people
+                                    </td>
+
+                                    <td>
+
+                                        {% if donation.status == "available" %}
+
+                                            <span class="status-badge status-available">
+                                                🟢 Available
+                                            </span>
+
+                                        {% elif donation.status == "claimed" %}
+
+                                            <span class="status-badge status-claimed">
+                                                🤝 Claimed
+                                            </span>
+
+                                        {% elif donation.status == "picked_up" %}
+
+                                            <span class="status-badge status-picked">
+                                                🚚 Picked Up
+                                            </span>
+
+                                        {% elif donation.status == "delivered" %}
+
+                                            <span class="status-badge status-delivered">
+                                                ✅ Delivered
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="status-badge">
+                                                {{ donation.status }}
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            {% else %}
+
+                <div class="empty-state">
+
+                    <div class="empty-state-icon">
+                        🍱
+                    </div>
+
+                    <h3>
+                        No donations yet
+                    </h3>
+
+                    <p>
+                        Add your first food donation to get started!
+                    </p>
+
+                    <a href="{{ url_for('add_food') }}">
+                        Add Food →
+                    </a>
+
+                </div>
+
+            {% endif %}
+
+        </section>
+
+
+    <!-- =====================================================
+         NGO DASHBOARD
+    ====================================================== -->
+
+    {% elif current_user.role == "ngo" %}
+
+
+        <section class="intro-card">
+
+            <h2>
+                ❤️ NGO Dashboard
+            </h2>
+
+            <p>
+                Find nearby available food and claim donations.
+            </p>
+
+        </section>
+
+
+        <!-- NGO STATS -->
+
+        <section
+            class="stats-grid"
+            aria-label="NGO statistics"
+        >
+
+            <article class="stat-card">
+
+                <div class="stat-icon">
+                    🍱
+                </div>
+
+                <div class="stat-title">
+                    Available Food
+                </div>
+
+                <div class="stat-number">
+                    {{ available_donations }}
+                </div>
+
+                <div class="stat-subtitle">
+                    Food ready to claim
+                </div>
+
+            </article>
+
+
+            <article class="stat-card">
+
+                <div class="stat-icon">
+                    🤝
+                </div>
+
+                <div class="stat-title">
+                    My Claims
+                </div>
+
+                <div class="stat-number">
+                    {{ my_claims }}
+                </div>
+
+                <div class="stat-subtitle">
+                    Donations claimed
+                </div>
+
+            </article>
+
+
+            <article class="stat-card">
+
+                <div class="stat-icon">
+                    🎯
+                </div>
+
+                <div class="stat-title">
+                    Smart Match
+                </div>
+
+                <div class="stat-number">
+                    AI
+                </div>
+
+                <div class="stat-subtitle">
+                    Distance + urgency + quantity
+                </div>
+
+            </article>
+
+
+            <article class="stat-card">
+
+                <div class="stat-icon">
+                    🔔
+                </div>
+
+                <div class="stat-title">
+                    Notifications
+                </div>
+
+                <div class="stat-number">
+                    {{ unread_notifications }}
+                </div>
+
+                <div class="stat-subtitle">
+                    Unread notifications
+                </div>
+
+            </article>
+
+        </section>
+
+
+        <!-- NGO ACTIONS -->
+
+        <section
+            class="dashboard-grid"
+            aria-label="NGO actions"
+        >
+
+            <article class="dashboard-card">
+
+                <span
+                    class="dashboard-icon"
+                    aria-hidden="true"
+                >
+                    🎯
+                </span>
+
+                <h3>
+                    Smart Food Match
+                </h3>
+
+                <p>
+                    Find food ranked using distance, urgency and quantity.
+                </p>
+
+                <a
+                    href="{{ url_for('available_food') }}"
+                    class="dashboard-link"
+                >
+                    Find Best Match →
+                </a>
+
+            </article>
+
+
+            <article class="dashboard-card">
+
+                <span
+                    class="dashboard-icon"
+                    aria-hidden="true"
+                >
+                    🤝
+                </span>
+
+                <h3>
+                    My Claims
+                </h3>
+
+                <p>
+                    View and track the donations you have claimed.
+                </p>
+
+                <a
+                    href="{{ url_for('my_claims') }}"
+                    class="dashboard-link outline"
+                >
+                    View Claims →
+                </a>
+
+            </article>
+
+
+            <article class="dashboard-card">
+
+                <span
+                    class="dashboard-icon"
+                    aria-hidden="true"
+                >
+                    🍱
+                </span>
+
+                <h3>
+                    Available Food
+                </h3>
+
+                <p>
+                    Browse all available surplus food donations.
+                </p>
+
+                <a
+                    href="{{ url_for('available_food') }}"
+                    class="dashboard-link outline"
+                >
+                    Browse Food →
+                </a>
+
+            </article>
+
+        </section>
+
+
+        <!-- RECENT CLAIMS -->
+
+        <section class="recent-card">
+
+            <div class="recent-header">
+
+                <h3>
+                    🤝 Recent Claims
+                </h3>
+
+                <a href="{{ url_for('my_claims') }}">
+                    View All →
+                </a>
+
+            </div>
+
+
+            {% if recent_claims %}
+
+                <div class="recent-table-wrapper">
+
+                    <table class="recent-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Food
+                                </th>
+
+                                <th>
+                                    Quantity
+                                </th>
+
+                                <th>
+                                    Serves
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            {% for claim in recent_claims %}
+
+                                <tr>
+
+                                    <td>
+                                        🍱 {{ claim.food_name }}
+                                    </td>
+
+                                    <td>
+                                        {{ claim.quantity }}
+                                    </td>
+
+                                    <td>
+                                        {{ claim.serves_people }}
+                                        people
+                                    </td>
+
+                                    <td>
+
+                                        {% if claim.status == "claimed" %}
+
+                                            <span class="status-badge status-claimed">
+                                                🤝 Claimed
+                                            </span>
+
+                                        {% elif claim.status == "picked_up" %}
+
+                                            <span class="status-badge status-picked">
+                                                🚚 Picked Up
+                                            </span>
+
+                                        {% elif claim.status == "delivered" %}
+
+                                            <span class="status-badge status-delivered">
+                                                ✅ Delivered
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="status-badge">
+                                                {{ claim.status }}
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            {% else %}
+
+                <div class="empty-state">
+
+                    <div class="empty-state-icon">
+                        🤝
+                    </div>
+
+                    <h3>
+                        No claims yet
+                    </h3>
+
+                    <p>
+                        Find available food to get started!
+                    </p>
+
+                    <a href="{{ url_for('available_food') }}">
+                        Find Food →
+                    </a>
+
+                </div>
+
+            {% endif %}
+
+        </section>
+
+
+    <!-- =====================================================
+         VOLUNTEER DASHBOARD
+    ====================================================== -->
+
+    {% elif current_user.role == "volunteer" %}
+
+
+        <section class="intro-card">
+
+            <h2>
+                🚚 Volunteer Dashboard
+            </h2>
+
+            <p>
+                Help pickup and deliver rescued food.
+            </p>
+
+        </section>
+
+
+        <section
+            class="dashboard-grid"
+            aria-label="Volunteer actions"
+        >
+
+            <article class="dashboard-card">
+
+                <span
+                    class="dashboard-icon"
+                    aria-hidden="true"
+                >
+                    🚚
+                </span>
+
+                <h3>
+                    Pickup Requests
+                </h3>
+
+                <p>
+                    View food pickup requests and help with delivery.
+                </p>
+
+                <a
+                    href="{{ url_for('pickup_requests') }}"
+                    class="dashboard-link"
+                >
+                    View Pickup Requests →
+                </a>
+
+            </article>
+
+        </section>
+
+
+    {% endif %}
+
+
+    <!-- =========================
+         LOCATION
+    ========================== -->
+
+    {% if current_user.role in ["donor", "ngo", "volunteer"] %}
+
+        <section class="location-card">
+
+            <div>
+
+                <h3>
+                    📍 Update Your Location
+                </h3>
+
+                <p>
+                    Share your current location to help coordinate food rescue.
+                </p>
+
+            </div>
+
+
+            <form
+                method="POST"
+                action="{{ url_for('update_location') }}"
+                id="locationForm"
+                class="location-form"
+            >
+
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="{{ csrf_token() }}"
+                >
+
+                <input
+                    type="hidden"
+                    name="latitude"
+                    id="latitude"
+                >
+
+                <input
+                    type="hidden"
+                    name="longitude"
+                    id="longitude"
+                >
+
+                <button
+                    type="button"
+                    class="location-btn"
+                    id="locationButton"
+                    onclick="getLocation()"
+                >
+                    📍 Get My Current Location
+                </button>
+
+            </form>
+
+        </section>
+
+    {% endif %}
+
+
+</main>
+
+
+<!-- =========================
+     LOCATION JAVASCRIPT
+========================= -->
+
+<script>
+
+function getLocation() {
+
+    if (!navigator.geolocation) {
+
+        alert(
+            "Geolocation is not supported by this browser."
+        );
+
+        return;
+    }
+
+
+    const button =
+        document.getElementById("locationButton");
+
+
+    button.disabled = true;
+
+    button.textContent =
+        "Getting location...";
+
+
+    navigator.geolocation.getCurrentPosition(
+
+        function (position) {
+
+            document.getElementById("latitude").value =
+                position.coords.latitude;
+
+            document.getElementById("longitude").value =
+                position.coords.longitude;
+
+
+            document
+                .getElementById("locationForm")
+                .submit();
+
+        },
+
+
+        function (error) {
+
+            button.disabled = false;
+
+            button.textContent =
+                "📍 Get My Current Location";
+
+
+            alert(
+                "Location permission denied or unavailable."
+            );
+
+        }
+
+    );
+
+}
+
+</script>
+
+
+</body>
+</html>

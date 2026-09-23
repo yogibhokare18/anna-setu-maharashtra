@@ -1,0 +1,71 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f8fff9;
+}
+
+
+/* Hero */
+
+.hero {
+    padding: 100px 20px;
+    background: linear-gradient(
+        135deg,
+        #e8f5e9,
+        #ffffff
+    );
+}
+
+
+.hero h1 {
+    font-size: 48px;
+    font-weight: 700;
+    color: #198754;
+}
+
+
+.hero h2 {
+    margin-top: 15px;
+    font-weight: 600;
+}
+
+
+.hero p {
+    max-width: 650px;
+    margin: 20px auto;
+    font-size: 18px;
+    color: #555;
+}
+
+
+/* Feature Cards */
+
+.feature-card {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+
+    box-shadow:
+        0 4px 15px rgba(0, 0, 0, 0.08);
+
+    height: 100%;
+
+    transition: 0.3s;
+}
+
+
+.feature-card:hover {
+    transform: translateY(-5px);
+}
+
+
+.feature-card h3 {
+    font-size: 40px;
+}
+
+
+.feature-card h5 {
+    margin-top: 15px;
+    color: #198754;
+}
+

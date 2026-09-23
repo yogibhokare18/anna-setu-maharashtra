@@ -1,0 +1,965 @@
+
+{% extends "base.html" %}
+
+{% block title %}Available Food - अन्नसेतू महाराष्ट्र{% endblock %}
+
+
+{% block extra_css %}
+
+<style>
+
+    .food-page {
+        max-width: 1150px;
+        margin: 0 auto;
+        padding: 45px 20px 70px;
+    }
+
+    /* =========================
+       HEADER
+       ========================= */
+
+    .food-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .food-header h1 {
+        margin: 0 0 8px;
+        font-size: clamp(28px, 4vw, 42px);
+    }
+
+    .food-header p {
+        margin: 0;
+        color: #65756c;
+    }
+
+    /* =========================
+       BEST MATCH
+       ========================= */
+
+    .best-match {
+        margin-bottom: 35px;
+        padding: 28px;
+        background: linear-gradient(135deg, #e9fff2, #ffffff);
+        border: 2px solid #178655;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(24, 49, 42, 0.10);
+    }
+
+    .best-match-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .best-match-title {
+        margin: 0;
+        color: #126b44;
+        font-size: 24px;
+    }
+
+    .best-badge {
+        padding: 7px 13px;
+        background: #178655;
+        color: white;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: bold;
+    }
+
+    .best-match-food {
+        margin-bottom: 18px;
+    }
+
+    .best-match-food h2 {
+        margin: 0 0 5px;
+        font-size: 28px;
+    }
+
+    .best-match-food p {
+        margin: 0;
+        color: #65756c;
+    }
+
+    .match-score {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        padding: 9px 15px;
+        margin-top: 15px;
+        background: #fff;
+        border: 1px solid #cfe5d6;
+        border-radius: 12px;
+        font-weight: bold;
+        color: #126b44;
+    }
+
+    .best-match-details {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    .match-item,
+    .distance {
+        padding: 15px;
+        background: white;
+        border-radius: 12px;
+        border: 1px solid #e2ebe4;
+    }
+
+    .match-label {
+        display: block;
+        margin-bottom: 5px;
+        color: #718178;
+        font-size: 13px;
+    }
+
+    .match-value {
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+    /* =========================
+       FOOD GRID
+       ========================= */
+
+    .food-grid {
+        display: grid;
+        grid-template-columns: repeat(
+            auto-fit,
+            minmax(300px, 1fr)
+        );
+        gap: 20px;
+    }
+
+    /* =========================
+       FOOD CARD
+       ========================= */
+
+    .food-card {
+        padding: 24px;
+        background: white;
+        border: 1px solid #e2ebe4;
+        border-radius: 18px;
+        box-shadow: 0 8px 25px rgba(24, 49, 42, 0.08);
+        transition: 0.25s ease;
+    }
+
+    .food-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 30px rgba(24, 49, 42, 0.13);
+    }
+
+    .food-card.best-card {
+        border: 2px solid #178655;
+    }
+
+    .food-card h2 {
+        margin: 0;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #edf1ed;
+        font-size: 22px;
+        overflow-wrap: anywhere;
+    }
+
+    /* =========================
+       CARD TOP
+       ========================= */
+
+    .card-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    .score-badge {
+        padding: 6px 10px;
+        background: #e9fff2;
+        color: #126b44;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: bold;
+        white-space: nowrap;
+    }
+
+    /* =========================
+       DETAILS
+       ========================= */
+
+    .food-details {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+        margin-top: 22px;
+    }
+
+    .food-detail.wide {
+        grid-column: 1 / -1;
+    }
+
+    .food-label {
+        display: block;
+        margin-bottom: 6px;
+        color: #718178;
+        font-size: 14px;
+    }
+
+    .food-value {
+        display: block;
+        font-size: 16px;
+        font-weight: 600;
+        overflow-wrap: anywhere;
+    }
+
+    /* =========================
+       MATCH INFO
+       ========================= */
+
+    .match-info {
+        margin-top: 20px;
+        padding: 15px;
+        background: #f7faf8;
+        border-radius: 12px;
+    }
+
+    .match-info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        padding: 7px 0;
+        border-bottom: 1px solid #e8eee9;
+        font-size: 14px;
+    }
+
+    .match-info-row:last-child {
+        border-bottom: none;
+    }
+
+    .urgency {
+        font-weight: bold;
+    }
+
+    .urgency-critical {
+        color: #dc3545;
+    }
+
+    .urgency-high {
+        color: #fd7e14;
+    }
+
+    .urgency-medium {
+        color: #d39e00;
+    }
+
+    .urgency-low {
+        color: #198754;
+    }
+
+    /* =========================
+       STATUS
+       ========================= */
+
+    .status-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+        margin-top: 8px;
+    }
+
+    .status-available {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .status-claimed {
+        background: #dbeafe;
+        color: #1e40af;
+    }
+
+    .status-picked {
+        background: #ffedd5;
+        color: #9a3412;
+    }
+
+    .status-delivered {
+        background: #f3e8ff;
+        color: #7e22ce;
+    }
+
+    /* =========================
+       CLAIM BUTTON
+       ========================= */
+
+    .claim-btn {
+        display: block;
+        width: 100%;
+        margin-top: 24px;
+        padding: 12px 18px;
+        border: 0;
+        border-radius: 10px;
+        background: #178655;
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        text-align: center;
+        text-decoration: none;
+        cursor: pointer;
+        transition: 0.2s ease;
+    }
+
+    .claim-btn:hover {
+        background: #126b44;
+        color: white;
+        transform: translateY(-1px);
+    }
+
+    /* =========================
+       EMPTY
+       ========================= */
+
+    .food-empty {
+        padding: 65px 20px;
+        background: white;
+        border: 1px dashed #bed7c5;
+        border-radius: 18px;
+        text-align: center;
+    }
+
+    .food-empty h2 {
+        margin: 0 0 10px;
+        font-size: 26px;
+    }
+
+    .food-empty p {
+        margin: 0;
+        color: #65756c;
+    }
+
+    /* =========================
+       TABLET
+       ========================= */
+
+    @media (max-width: 700px) {
+
+        .best-match-details {
+            grid-template-columns: 1fr;
+        }
+
+    }
+
+    /* =========================
+       MOBILE
+       ========================= */
+
+    @media (max-width: 600px) {
+
+        .food-page {
+            padding: 28px 15px 50px;
+        }
+
+        .food-header {
+            align-items: flex-start;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .food-header h1 {
+            font-size: 30px;
+        }
+
+        .best-match {
+            padding: 20px;
+        }
+
+        .best-match-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .best-match-food h2 {
+            font-size: 24px;
+        }
+
+        .match-score {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .food-grid {
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        .food-card {
+            padding: 20px;
+        }
+
+        .card-top {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .food-details {
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .food-detail.wide {
+            grid-column: auto;
+        }
+
+        .match-info-row {
+            align-items: flex-start;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .claim-btn {
+            width: 100%;
+        }
+
+    }
+
+    /* =========================
+   ADD FOOD FORM POLISH
+========================= */
+
+.add-food-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 45px 20px 70px;
+}
+
+.form-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    padding: 30px;
+    box-shadow: 0 8px 25px rgba(24, 49, 42, 0.08);
+}
+
+.form-header {
+    margin-bottom: 25px;
+}
+
+.form-header h1 {
+    margin: 0 0 8px;
+    font-size: 30px;
+    color: #18312a;
+}
+
+.form-header p {
+    margin: 0;
+    color: #64748b;
+    font-size: 14px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #18312a;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px 14px;
+
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+
+    background: #fff;
+    color: #18312a;
+
+    font-size: 14px;
+    outline: none;
+
+    transition: 0.2s ease;
+}
+
+.form-group textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #178655;
+    box-shadow: 0 0 0 3px rgba(23, 134, 85, 0.12);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+.form-submit {
+    width: 100%;
+    margin-top: 8px;
+
+    padding: 13px 18px;
+
+    border: none;
+    border-radius: 11px;
+
+    background: #178655;
+    color: white;
+
+    font-size: 15px;
+    font-weight: 700;
+
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.form-submit:hover {
+    background: #0f6b43;
+    transform: translateY(-1px);
+}
+
+@media (max-width: 600px) {
+
+    .add-food-page {
+        padding: 30px 15px 50px;
+    }
+
+    .form-card {
+        padding: 20px;
+        border-radius: 14px;
+    }
+
+    .form-header h1 {
+        font-size: 25px;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+}
+
+</style>
+
+{% endblock %}
+
+
+
+{% block content %}
+
+<main class="food-page">
+
+
+    <!-- =========================
+         PAGE HEADER
+         ========================= -->
+
+    <header class="food-header">
+
+        <div>
+
+            <h1>
+                🍱 Available Food
+            </h1>
+
+            <p>
+                Find surplus food available for pickup.
+            </p>
+
+        </div>
+
+    </header>
+
+
+
+    {% if donations %}
+
+
+        <!-- =========================
+             BEST FOOD MATCH
+             ========================= -->
+
+        {% if best_match %}
+
+            <section class="best-match">
+
+                <div class="best-match-header">
+
+                    <h2 class="best-match-title">
+                        🎯 Best Food Match
+                    </h2>
+
+                    <span class="best-badge">
+                        ⭐ Recommended Match
+                    </span>
+
+                </div>
+
+
+                <div class="best-match-food">
+
+                    <h2>
+                        🍱 {{ best_match.food_name }}
+                    </h2>
+
+                    <p>
+                        This donation currently has the highest
+                        Smart Match Score for your NGO.
+                    </p>
+
+
+                    <div class="match-score">
+
+                        ⭐ Match Score:
+                        {{ best_match.match_score|round(1) }}%
+
+                    </div>
+
+                </div>
+
+
+                <div class="best-match-details">
+
+                    <div class="distance">
+                        📍
+                        {% if best_match.distance is not none %}
+                            {{ best_match.distance|round(2) }} km away
+                        {% else %}
+                            Distance unavailable
+                        {% endif %}
+                    </div>
+
+
+                    <div class="match-item">
+
+                        <span class="match-label">
+                            ⏰ Urgency
+                        </span>
+
+                        <span class="match-value">
+
+                            {{ best_match.urgency_label }}
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="match-item">
+
+                        <span class="match-label">
+                            📦 Quantity Match
+                        </span>
+
+                        <span class="match-value">
+
+                            {{ best_match.quantity_match }}
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+<form
+    method="POST"
+    action="{{ url_for('claim_donation', donation_id=donation.id) }}"
+>
+
+    <input
+        type="hidden"
+        name="csrf_token"
+        value="{{ csrf_token() }}"
+    >
+
+    <button type="submit">
+        Claim Donation
+    </button>
+
+</form>
+
+            </section>
+
+        {% endif %}
+
+
+
+        <!-- =========================
+             ALL AVAILABLE FOOD
+             ========================= -->
+
+        <div class="food-grid">
+
+
+            {% for donation in donations %}
+
+                <article
+                    class="food-card
+                    {% if best_match and donation.id == best_match.id %}
+                        best-card
+                    {% endif %}"
+                >
+
+
+                    <div class="card-top">
+
+                        <h2>
+                            🍱 {{ donation.food_name }}
+                        </h2>
+
+
+                        <span class="score-badge">
+
+                            ⭐
+                            {{ donation.match_score|round(1) }}%
+
+                        </span>
+
+                    </div>
+
+
+
+                    <div class="food-details">
+
+
+                        <div class="food-detail">
+
+                            <span class="food-label">
+                                📦 Quantity
+                            </span>
+
+                            <span class="food-value">
+
+                                {{ donation.quantity }}
+
+                            </span>
+
+                        </div>
+
+
+
+                        <div class="food-detail">
+
+                            <span class="food-label">
+                                👥 Serves
+                            </span>
+
+                            <span class="food-value">
+
+                                {{ donation.serves_people }}
+                                people
+
+                            </span>
+
+                        </div>
+
+
+
+                        <div class="food-detail wide">
+
+                            <span class="food-label">
+                                📍 Pickup Address
+                            </span>
+
+                            <span class="food-value">
+
+                                {{ donation.address }}
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <!-- =========================
+                        DONATION STATUS
+                        ========================= -->
+
+                    <div class="match-info-row" style="margin-top: 15px;">
+                        <span>
+                            📌 Status
+                        </span>
+
+                        <strong>
+                            {% if donation.status == "available" %}
+                                🟢 Available
+
+                            {% elif donation.status == "claimed" %}
+                                🔵 Claimed
+
+                            {% elif donation.status == "picked_up" %}
+                                🟠 Picked Up
+
+                            {% elif donation.status == "delivered" %}
+                                🟣 Delivered
+
+                            {% else %}
+                                ⚪ {{ donation.status }}
+                            {% endif %}
+                        </strong>
+                    </div>
+
+
+
+                    <!-- =========================
+                         SMART MATCH DETAILS
+                         ========================= -->
+
+                    <div class="match-info">
+
+
+                        <div class="match-info-row">
+                            <span>
+                                📍 Distance
+                            </span>
+                            <strong>
+                                {% if donation.distance is not none %}
+                                    {{ donation.distance|round(2) }} km
+                                {% else %}
+                                    Distance unavailable
+                                {% endif %}
+                            </strong>
+                        </div>
+
+
+
+                        <div class="match-info-row">
+
+                            <span>
+                                ⏰ Urgency
+                            </span>
+
+                            <strong
+                                class="urgency
+                                {% if donation.urgency == 'Critical' %}
+                                    urgency-critical
+                                {% elif donation.urgency == 'High' %}
+                                    urgency-high
+                                {% elif donation.urgency == 'Medium' %}
+                                    urgency-medium
+                                {% else %}
+                                    urgency-low
+                                {% endif %}
+                            >
+
+                                {{ donation.urgency }}
+
+                            </strong>
+
+                        </div>
+
+
+
+                        <div class="match-info-row">
+
+                            <span>
+                                📦 Quantity Match
+                            </span>
+
+                            <strong>
+
+                                {{ donation.quantity_match }}
+
+                            </strong>
+
+                        </div>
+
+
+
+                        <div class="match-info-row">
+
+                            <span>
+                                ⭐ Smart Match Score
+                            </span>
+
+                            <strong>
+
+                                {{ donation.match_score|round(1) }}%
+
+                            </strong>
+
+                        </div>
+
+
+                    </div>
+
+
+
+                    <!-- =========================
+                         CLAIM
+                         ========================= -->
+
+                    <form
+                        action="{{ url_for(
+                            'claim_donation',
+                            donation_id=donation.id
+                        ) }}"
+                        method="POST"
+                    >
+
+                        <button
+                            type="submit"
+                            class="claim-btn"
+                        >
+                            🤝 Claim Food
+                        </button>
+
+                    </form>
+
+
+                </article>
+
+            {% endfor %}
+
+
+        </div>
+
+
+    {% else %}
+
+
+        <!-- =========================
+             EMPTY STATE
+             ========================= -->
+
+        <div class="food-empty">
+
+            <h2>
+                😔 No Food Available
+            </h2>
+
+            <p>
+                Currently there are no available food donations.
+            </p>
+
+        </div>
+
+
+    {% endif %}
+
+
+</main>
+
+{% endblock %}

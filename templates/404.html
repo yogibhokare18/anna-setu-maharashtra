@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Page Not Found - अन्नसेतू महाराष्ट्र{% endblock %}
+
+{% block content %}
+
+<div style="
+    max-width: 700px;
+    margin: 80px auto;
+    padding: 50px 25px;
+    text-align: center;
+">
+
+    <div style="font-size: 70px;">
+        🔍
+    </div>
+
+    <h1 style="
+        margin: 15px 0;
+        font-size: 42px;
+    ">
+        404
+    </h1>
+
+    <h2>
+        Page Not Found
+    </h2>
+
+    <p style="
+        color: #65756c;
+        margin: 15px 0 25px;
+    ">
+        Sorry, the page you are looking for
+        does not exist.
+    </p>
+
+    <a
+        href="{{ url_for('dashboard') }}"
+        style="
+            display: inline-block;
+            padding: 12px 22px;
+            background: #178655;
+            color: white;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: bold;
+        "
+    >
+        🏠 Back to Dashboard
+    </a>
+
+</div>
+
+{% endblock %}

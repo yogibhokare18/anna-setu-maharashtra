@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>NGO Location - अन्नसेतू महाराष्ट्र</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f7fb;
+        }
+
+        .location-container {
+            max-width: 650px;
+            margin: 70px auto;
+            padding: 20px;
+        }
+
+        .location-card {
+            background: white;
+            padding: 35px;
+            border-radius: 18px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        }
+
+        h1 {
+            margin-top: 0;
+            color: #222;
+        }
+
+        .subtitle {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .location-box {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 12px;
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+        }
+
+        .location-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            background: #2563eb;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .location-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .status {
+            margin-top: 18px;
+            padding: 12px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .coordinates {
+            margin-top: 15px;
+            line-height: 1.8;
+            color: #333;
+            display: none;
+        }
+
+        .save-btn {
+            width: 100%;
+            margin-top: 20px;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            background: #16a34a;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: none;
+        }
+
+        .save-btn:hover {
+            background: #15803d;
+        }
+
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            text-decoration: none;
+            color: #2563eb;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="location-container">
+
+    <div class="location-card">
+
+        <h1>📍 NGO Location</h1>
+
+        <p class="subtitle">
+            Set your current location so that the system can
+            calculate the distance between your NGO and available
+            food donations.
+        </p>
+
+        <div class="location-box">
+
+            <button
+                type="button"
+                class="location-btn"
+                onclick="getLocation()">
+
+                📍 Use My Current Location
+
+            </button>
+
+            <div id="status" class="status"></div>
+
+            <div id="coordinates" class="coordinates">
+
+                <strong>Latitude:</strong>
+                <span id="latitudeText"></span>
+                <br>
+
+                <strong>Longitude:</strong>
+                <span id="longitudeText"></span>
+
+            </div>
+
+        </div>
+
+<form method="POST">
+
+    <input
+        type="hidden"
+        name="csrf_token"
+        value="{{ csrf_token() }}"
+    >
+
+    <input
+        type="hidden"
+        id="latitude"
+        name="latitude">
+
+    <input
+        type="hidden"
+        id="longitude"
+        name="longitude">
+
+            <button
+                type="submit"
+                id="saveButton"
+                class="save-btn">
+
+                💾 Save NGO Location
+
+            </button>
+
+        </form>
+
+        <a
+            href="{{ url_for('dashboard') }}"
+            class="back-link">
+
+            ← Back to Dashboard
+
+        </a>
+
+    </div>
+
+</div>
+
+
+<script>
+
+function getLocation() {
+
+    const status = document.getElementById("status");
+
+    const coordinates =
+        document.getElementById("coordinates");
+
+    const saveButton =
+        document.getElementById("saveButton");
+
+    if (!navigator.geolocation) {
+
+        status.style.display = "block";
+
+        status.innerHTML =
+            "❌ Geolocation is not supported by your browser.";
+
+        return;
+    }
+
+    status.style.display = "block";
+
+    status.innerHTML =
+        "📍 Getting your current location...";
+
+    navigator.geolocation.getCurrentPosition(
+
+        function(position) {
+
+            const latitude =
+                position.coords.latitude;
+
+            const longitude =
+                position.coords.longitude;
+
+            document.getElementById("latitude").value =
+                latitude;
+
+            document.getElementById("longitude").value =
+                longitude;
+
+            document.getElementById("latitudeText").innerText =
+                latitude.toFixed(6);
+
+            document.getElementById("longitudeText").innerText =
+                longitude.toFixed(6);
+
+            status.innerHTML =
+                "✅ Location captured successfully.";
+
+            status.style.background = "#dcfce7";
+
+            status.style.color = "#166534";
+
+            coordinates.style.display = "block";
+
+            saveButton.style.display = "block";
+
+        },
+
+        function(error) {
+
+            status.style.display = "block";
+
+            status.style.background = "#fee2e2";
+
+            status.style.color = "#991b1b";
+
+            if (error.code === 1) {
+
+                status.innerHTML =
+                    "❌ Location permission denied. Please allow location access.";
+
+            }
+            else if (error.code === 2) {
+
+                status.innerHTML =
+                    "❌ Location unavailable.";
+
+            }
+            else if (error.code === 3) {
+
+                status.innerHTML =
+                    "❌ Location request timed out.";
+
+            }
+            else {
+
+                status.innerHTML =
+                    "❌ Unable to get your location.";
+
+            }
+
+        },
+
+        {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0
+        }
+
+    );
+
+}
+
+</script>
+
+</body>
+</html>

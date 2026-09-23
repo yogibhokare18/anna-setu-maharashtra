@@ -1,0 +1,620 @@
+
+{% extends "base.html" %}
+
+{% block title %}Add Food - अन्नसेतू महाराष्ट्र{% endblock %}
+
+{% block extra_css %}
+
+<style>
+
+    .add-food-page {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 45px 20px 70px;
+    }
+
+    .form-card {
+        background: white;
+        border: 1px solid #e2ebe4;
+        border-radius: 20px;
+        padding: 36px;
+        box-shadow: 0 8px 25px rgba(24, 49, 42, 0.08);
+    }
+
+    .form-heading {
+        margin-bottom: 30px;
+    }
+
+    .form-heading h1 {
+        margin: 0 0 10px;
+        font-size: clamp(28px, 4vw, 38px);
+    }
+
+    .form-heading p {
+        margin: 0;
+        color: #65756c;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 22px;
+    }
+
+    .form-group.full {
+        grid-column: 1 / -1;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 9px;
+        color: #263d32;
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        display: block;
+        width: 100%;
+        min-height: 48px;
+        padding: 11px 14px;
+        border: 1px solid #cfded3;
+        border-radius: 10px;
+        background: white;
+        color: #18312a;
+        font: inherit;
+        outline: none;
+        box-sizing: border-box;
+    }
+
+    .form-group textarea {
+        min-height: 110px;
+        resize: vertical;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        border-color: #178655;
+        box-shadow: 0 0 0 3px rgba(23, 134, 85, 0.12);
+    }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+        color: #89978d;
+    }
+
+    .field-hint {
+        display: block;
+        margin-top: 7px;
+        color: #718178;
+        font-size: 13px;
+    }
+
+    /* =========================
+       LOCATION SECTION
+       ========================= */
+
+    .location-box {
+        grid-column: 1 / -1;
+        padding: 20px;
+        border: 1px solid #dbe9df;
+        border-radius: 14px;
+        background: #f7fbf8;
+    }
+
+    .location-title {
+        margin: 0 0 8px;
+        color: #18312a;
+        font-size: 18px;
+        font-weight: 800;
+    }
+
+    .location-description {
+        margin: 0 0 15px;
+        color: #65756c;
+        font-size: 14px;
+    }
+
+    .location-btn {
+        border: 1px solid #178655;
+        background: #178655;
+        color: white;
+        min-height: 46px;
+        padding: 10px 18px;
+        border-radius: 10px;
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .location-btn:hover {
+        background: #126b44;
+    }
+
+    .location-status {
+        margin-top: 12px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .location-success {
+        color: #178655;
+    }
+
+    .location-error {
+        color: #c0392b;
+    }
+
+    .coordinates {
+        display: none;
+        margin-top: 12px;
+        padding: 10px 12px;
+        border-radius: 8px;
+        background: white;
+        border: 1px solid #e2ebe4;
+        font-size: 13px;
+        color: #52645a;
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 30px;
+        padding-top: 24px;
+        border-top: 1px solid #edf1ed;
+    }
+
+    .cancel-btn,
+    .submit-btn {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 46px;
+        padding: 11px 20px;
+        border-radius: 10px;
+        font: inherit;
+        font-weight: 700;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .cancel-btn {
+        border: 1px solid #cfded3;
+        background: white;
+        color: #255c40;
+    }
+
+    .submit-btn {
+        border: 1px solid #178655;
+        background: #178655;
+        color: white;
+    }
+
+    .submit-btn:hover {
+        background: #126b44;
+    }
+
+    @media (max-width: 650px) {
+
+        .add-food-page {
+            padding: 28px 15px 50px;
+        }
+
+        .form-card {
+            padding: 24px 18px;
+        }
+
+        .form-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .form-group.full,
+        .location-box {
+            grid-column: auto;
+        }
+
+        .form-actions {
+            flex-direction: column-reverse;
+        }
+
+        .cancel-btn,
+        .submit-btn,
+        .location-btn {
+            width: 100%;
+        }
+    }
+
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+<main class="add-food-page">
+
+    <section class="form-card">
+
+        <header class="form-heading">
+
+            <h1>🍱 Add Food Donation</h1>
+
+            <p>
+                Share safe surplus food with people in need.
+            </p>
+
+        </header>
+
+
+<form method="POST" action="{{ request.path }}">
+
+    <input
+        type="hidden"
+        name="csrf_token"
+        value="{{ csrf_token() }}"
+    >
+
+            <div class="form-grid">
+
+
+                <!-- FOOD NAME -->
+
+                <div class="form-group full">
+
+                    <label for="food_name">
+                        Food Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="food_name"
+                        name="food_name"
+                        placeholder="Example: Veg Biryani"
+                        maxlength="100"
+                        required
+                    >
+
+                </div>
+
+        <!-- FOOD TYPE -->
+        <div class="form-group">
+
+            <label for="food_type">
+                Food Type
+            </label>
+
+            <select
+                id="food_type"
+                name="food_type"
+                required
+            >
+
+                <option value="" selected disabled>
+                    Select Food Type
+                </option>
+
+                <option value="veg">
+                    🟢 Veg
+                </option>
+
+                <option value="non-veg">
+                    🔴 Non-Veg
+                </option>
+
+            </select>
+
+        </div>
+
+
+                <!-- QUANTITY -->
+
+                <div class="form-group">
+
+                    <label for="quantity">
+                        Quantity (Kg)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="quantity"
+                        name="quantity"
+                        placeholder="Example: 25"
+                        min="0.1"
+                        step="0.1"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- SERVES PEOPLE -->
+
+                <div class="form-group">
+
+                    <label for="serves_people">
+                        Serves People
+                    </label>
+
+                    <input
+                        type="number"
+                        id="serves_people"
+                        name="serves_people"
+                        placeholder="Example: 50"
+                        min="1"
+                        step="1"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- PREPARED AT -->
+
+                <div class="form-group">
+
+                    <label for="prepared_at">
+                        Prepared At
+                    </label>
+
+                    <input
+                        type="datetime-local"
+                        id="prepared_at"
+                        name="prepared_at"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- SAFE UNTIL -->
+
+                <div class="form-group">
+
+                    <label for="safe_until">
+                        Safe Until
+                    </label>
+
+                    <input
+                        type="datetime-local"
+                        id="safe_until"
+                        name="safe_until"
+                        required
+                    >
+
+                    <small class="field-hint">
+                        Choose a time after the food was prepared.
+                    </small>
+
+                </div>
+
+
+                <!-- PICKUP ADDRESS -->
+
+                <div class="form-group full">
+
+                    <label for="address">
+                        Pickup Address
+                    </label>
+
+                    <textarea
+                        id="address"
+                        name="address"
+                        placeholder="Enter the complete pickup address"
+                        required
+                    ></textarea>
+
+                </div>
+
+
+                <!-- =========================
+                     LOCATION
+                     ========================= -->
+
+                <div class="location-box">
+
+                    <h3 class="location-title">
+                        📍 Pickup Location
+                    </h3>
+
+                    <p class="location-description">
+                        Allow location access so NGOs can find nearby food
+                        donations and get accurate distance information.
+                    </p>
+
+
+                    <button
+                        type="button"
+                        class="location-btn"
+                        onclick="getLocation()"
+                    >
+                        📍 Use My Current Location
+                    </button>
+
+
+                    <div
+                        id="location-status"
+                        class="location-status"
+                    >
+                        Location not selected yet.
+                    </div>
+
+
+                    <div
+                        id="coordinates"
+                        class="coordinates"
+                    >
+                        Latitude:
+                        <span id="latitude-display"></span>
+                        <br>
+
+                        Longitude:
+                        <span id="longitude-display"></span>
+                    </div>
+
+
+                    <!-- Hidden fields -->
+
+                    <input
+                        type="hidden"
+                        id="latitude"
+                        name="latitude"
+                    >
+
+                    <input
+                        type="hidden"
+                        id="longitude"
+                        name="longitude"
+                    >
+
+                </div>
+
+
+            </div>
+
+
+            <!-- ACTIONS -->
+
+            <div class="form-actions">
+
+                <a
+                    class="cancel-btn"
+                    href="{{ url_for('my_donations') }}"
+                >
+                    Cancel
+                </a>
+
+                <button
+                    class="submit-btn"
+                    type="submit"
+                >
+                    + Add Food Donation
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+</main>
+
+
+<script>
+
+function getLocation() {
+
+    const status = document.getElementById("location-status");
+
+    const latitudeInput = document.getElementById("latitude");
+    const longitudeInput = document.getElementById("longitude");
+
+    const coordinates = document.getElementById("coordinates");
+
+    const latitudeDisplay = document.getElementById("latitude-display");
+    const longitudeDisplay = document.getElementById("longitude-display");
+
+
+    if (!navigator.geolocation) {
+
+        status.textContent =
+            "❌ Geolocation is not supported by this browser.";
+
+        status.className =
+            "location-status location-error";
+
+        return;
+    }
+
+
+    status.textContent =
+        "📍 Detecting your location...";
+
+    status.className =
+        "location-status";
+
+
+    navigator.geolocation.getCurrentPosition(
+
+        function(position) {
+
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+
+
+            // Store coordinates in hidden inputs
+
+            latitudeInput.value = latitude;
+            longitudeInput.value = longitude;
+
+
+            // Display coordinates
+
+            latitudeDisplay.textContent =
+                latitude.toFixed(6);
+
+            longitudeDisplay.textContent =
+                longitude.toFixed(6);
+
+
+            coordinates.style.display = "block";
+
+
+            status.textContent =
+                "✅ Location captured successfully.";
+
+            status.className =
+                "location-status location-success";
+
+        },
+
+
+        function(error) {
+
+            let message =
+                "❌ Unable to get your location.";
+
+            if (error.code === 1) {
+
+                message =
+                    "❌ Location permission denied. Please allow location access.";
+
+            } else if (error.code === 2) {
+
+                message =
+                    "❌ Location information is unavailable.";
+
+            } else if (error.code === 3) {
+
+                message =
+                    "❌ Location request timed out.";
+
+            }
+
+
+            status.textContent = message;
+
+            status.className =
+                "location-status location-error";
+
+        },
+
+        {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0
+        }
+
+    );
+
+}
+
+
+
+</script>
+
+{% endblock %}

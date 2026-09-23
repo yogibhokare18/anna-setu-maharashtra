@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Server Error - अन्नसेतू महाराष्ट्र{% endblock %}
+
+{% block content %}
+
+<div style="
+    max-width: 700px;
+    margin: 80px auto;
+    padding: 50px 25px;
+    text-align: center;
+">
+
+    <div style="font-size: 70px;">
+        ⚠️
+    </div>
+
+    <h1 style="
+        margin: 15px 0;
+        font-size: 42px;
+    ">
+        500
+    </h1>
+
+    <h2>
+        Something Went Wrong
+    </h2>
+
+    <p style="
+        color: #65756c;
+        margin: 15px 0 25px;
+    ">
+        Something went wrong on our server.
+        Please try again.
+    </p>
+
+    <a
+        href="{{ url_for('dashboard') }}"
+        style="
+            display: inline-block;
+            padding: 12px 22px;
+            background: #178655;
+            color: white;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: bold;
+        "
+    >
+        🏠 Back to Dashboard
+    </a>
+
+</div>
+
+{% endblock %}
